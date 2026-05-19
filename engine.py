@@ -20,93 +20,127 @@ RULES:
 
 # Your encryption code will go below this line!
 
-ord("A")  # Returns: 65
-ord("Z")  # Returns: 90
-ord("a")  # Returns: 97
-ord(" ")  # Returns: 32 (space)
-ord("!")  # Returns: 33
 
-chr(65)  # Returns: 'A'
-chr(90)  # Returns: 'Z'
-chr(97)  # Returns: 'a'
-chr(32)  # Returns: ' ' (space)
-chr(33)  # Returns: '!'
-
-# Shift a character by 'shift' positions, wrapping around
-position = ord(chr) - 32  # Convert to 0-94 range
-new_position = (position + shift) % 95  # Add shift, wrap with modulo
-result = chr(new_position + 32)  # Convert back to ASCII
-
-
-def encrypt_message(text, shift):
+def phase1_encrypt(text, key):
     """
-    Shift every character in the text by a given amount.
+    Phase 1: Substitution — Shift every character by a fixed amount.
+
+    This layer changes WHAT each character is (its identity).
 
     Args:
-        text: The message to encrypt (string)
-        shift: How many positions to move each character (int)
+        text: The plaintext string to encrypt
+        key: Dictionary containing encryption settings
 
     Returns:
-        The encrypted message (string)
+        The encrypted string with all characters shifted
     """
+    # Get the shift amount from the key (default to 5 if not specified)
+    shift = key.get("shift", 5)
 
-
-def function_name(param1, param2):
-    """
-    Brief description of what the function does.
-
-    Args:
-        param1: Description of first parameter
-        param2: Description of second parameter
-
-    Returns:
-        Description of what is returned
-    """
-
-
-def simple_shift(text, shift):
-    """
-    Shift every character by 'shift' positions.
-
-    This is a simple Caesar cipher that works on ALL printable characters,
-    not just letters. It wraps around using modular arithmetic.
-
-    Args:
-        text: The string to encrypt
-        shift: How many positions to shift (positive = forward)
-
-    Returns:
-        The encrypted string
-    """
     result = ""
-
     for char in text:
         if 32 <= ord(char) <= 126:  # Printable ASCII range
-            # Convert to 0-94 range
             position = ord(char) - 32
-            # Shift and wrap
             new_position = (position + shift) % 95
-            # Convert back to character
-            result += char(new_position + 32)
+            result += chr(new_position + 32)
         else:
-            # Keep non-printable characters unchanged
             result += char
 
     return result
 
 
-def simple_unshift(text, shift):
+def phase1_decrypt(text, key):
     """
-    Reverse the simple_shift encryption.
+    Phase 1: Reverse the substitution.
 
-    Decryption is just shifting in the opposite direction!
+    Decryption shifts in the OPPOSITE direction (subtracts instead of adds).
 
     Args:
         text: The encrypted string
-        shift: The same shift value used for encryption
+        key: Dictionary containing the same encryption settings
 
     Returns:
         The decrypted (original) string
     """
-    # Decryption = shifting backwards (negative)
-    return simple_shift(text, -shift)
+    shift = key.get("shift", 5)
+
+    result = ""
+    for char in text:
+        if 32 <= ord(char) <= 126:
+            position = ord(char) - 32
+            new_position = (position - shift) % 95  # SUBTRACT to reverse!
+            result += chr(new_position + 32)
+        else:
+            result += char
+
+    return result
+
+
+from engine import phase1_encrypt, phase1_decrypt
+
+
+def encrypt(text, key):
+    """
+    CipherForge Master Encryption — Applies all 5 phases.
+
+    Currently implemented: Phase 1 only
+    Coming soon: Phases 2-5
+
+    Args:
+        text: The plaintext to encrypt
+        key: Dictionary with settings for all phases
+
+    Returns:
+        Fully encrypted string
+    """
+    # Phase 1: Substitution
+    result = phase1_encrypt(text, key)
+
+    # TODO: Phase 2 — Transposition
+    # result = phase2_encrypt(result, key)
+
+    # TODO: Phase 3 — Key-Dependent
+    # result = phase3_encrypt(result, key)
+
+    # TODO: Phase 4 — Noise Injection
+    # result = phase4_encrypt(result, key)
+
+    # TODO: Phase 5 — Wild Card
+    # result = phase5_encrypt(result, key)
+
+    return result
+
+
+def decrypt(text, key):
+    """
+    CipherForge Master Decryption — Reverses all 5 phases.
+
+    IMPORTANT: Phases must be reversed in OPPOSITE order!
+    Encrypt: 1 → 2 → 3 → 4 → 5
+    Decrypt: 5 → 4 → 3 → 2 → 1
+
+    Args:
+        text: The encrypted text
+        key: Same key used for encryption
+
+    Returns:
+        Original plaintext
+    """
+    result = text
+
+    # TODO: Phase 5 — Reverse Wild Card (first!)
+    # result = phase5_decrypt(result, key)
+
+    # TODO: Phase 4 — Reverse Noise Injection
+    # result = phase4_decrypt(result, key)
+
+    # TODO: Phase 3 — Reverse Key-Dependent
+    # result = phase3_decrypt(result, key)
+
+    # TODO: Phase 2 — Reverse Transposition
+    # result = phase2_decrypt(result, key)
+
+    # Phase 1: Reverse Substitution (last!)
+    result = phase1_decrypt(result, key)
+
+    return result
