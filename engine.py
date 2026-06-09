@@ -247,3 +247,38 @@ def phase3_decrypt(text, key):
             result += char
 
     return result
+
+# PHASE 5: WILD CARD - Pair Swapping 
+
+def phase5_encrypt(text, key):
+    """Swap adjacent pairs"""
+      # Handle empty and single-character strings
+     if len(text) <= 1:
+        return text
+    
+    result = ""
+    
+    
+       for i in range(0, len(text) - 1, 2):
+        # Swap pairs: AB → BA
+        result += text[i + 1]
+        result += text[i]
+    
+    # YOUR ENCRYPTION CODE HERE
+       # Handle odd-length strings (last char stays)
+    if len(text) % 2 == 1:
+        result += text[-1]
+    
+    
+    return result
+
+
+def phase5_decrypt(text, key):
+    """Swapping twice returns original — self-inverse!"""
+    result = ""
+    
+    # YOUR DECRYPTION CODE HERE
+     return phase5_encrypt(text, key)  # Same operation!
+    
+    return result
+
