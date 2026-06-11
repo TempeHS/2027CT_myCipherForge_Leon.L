@@ -1,6 +1,6 @@
 # 🔐 CipherForge
 
-**A custom 5-layer encryption algorithm** built as part of Year 9 Digital Technologies.
+**A 5-phase encryption algorithm built from scratch in Python.
 
 ## About
 
